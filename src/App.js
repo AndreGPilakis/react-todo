@@ -14,7 +14,7 @@ state = {
     {
       id: 2,
       title: 'Dinner with friends',
-      completed: false
+      completed: true
     },
     {
       id: 3,
@@ -23,11 +23,15 @@ state = {
     }
   ]
 }
+
+markComplete = (id) => {
+  console.log(id);
+}
+
 render(){
-  console.log(this.state.todos)
   return(
     <div className="App">
-      <Todos />
+      <Todos todos={this.state.todos} markComplete={this.markComplete}/>
     </div>
   );
 }

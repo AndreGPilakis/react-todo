@@ -6,6 +6,7 @@ import Header from './components/layout/Header'
 import AddTodo from './components/AddTodo';
 import About from './components/pages/About';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 
 
@@ -13,23 +14,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 class App extends Component {
 
+  //Get only 10 placeholders
+componentDidMount(){
+  axios.get('https://jsonplaceholder.typicode.com/todos?_limit=10')
+  .then(res => this.setState({todos: res.data}))
+}
+
 state = {
   todos: [
-    {
-      id: uuidv4(),
-      title: 'Take out the trash',
-      completed: false
-    },
-    {
-      id: uuidv4(),
-      title: 'Dinner with friends',
-      completed: true
-    },
-    {
-      id: uuidv4(),
-      title: 'Meeting with boss',
-      completed: false
-    }
   ]
 }
 
@@ -45,19 +37,22 @@ markComplete = (id) => {
 
 //Delete todo
 delTodo = (id) => {
+  axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`)
+  .then(res => this.setState({todos: [...this.state.todos.filter(todo => todo.id != id)] }));
   //Returns a new array of all todos except the one with the matching ID.
   // ... Is spread operator, essentially spreads the array.
-  this.setState({todos: [...this.state.todos.filter(todo => todo.id != id)] })
+  
 }
 
-// Add todo
+// Add todo - don't need to re-write title as it is the same, always want to default completed to false.
 addTodo = (title) => {
-  const newTodo ={
-    id: uuidv4(),
+  axios.post('https://jsonplaceholder.typicode.com/todos',{
     title,
-    completed: false
-  }
-   this.setState({todos: [...this.state.todos, newTodo]});
+    completed:false
+  })
+  .then(res => this.setState({todos: 
+    [...this.state.todos, res.data]}));
+  
 }
 
 

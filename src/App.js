@@ -1,23 +1,32 @@
 import React, {Component} from 'react';
+import {BrowserRouter as Router, Route} from 'react-router-dom'
 import './App.css';
 import Todos from './components/Todos';
+import Header from './components/layout/Header'
+import AddTodo from './components/AddTodo';
+import About from './components/pages/About';
+import { v4 as uuidv4 } from 'uuid';
+
+
+
+
 
 class App extends Component {
 
 state = {
   todos: [
     {
-      id: 1,
+      id: uuidv4(),
       title: 'Take out the trash',
       completed: false
     },
     {
-      id: 2,
+      id: uuidv4(),
       title: 'Dinner with friends',
       completed: true
     },
     {
-      id: 3,
+      id: uuidv4(),
       title: 'Meeting with boss',
       completed: false
     }
@@ -34,11 +43,40 @@ markComplete = (id) => {
   })});
 }
 
+//Delete todo
+delTodo = (id) => {
+  //Returns a new array of all todos except the one with the matching ID.
+  // ... Is spread operator, essentially spreads the array.
+  this.setState({todos: [...this.state.todos.filter(todo => todo.id != id)] })
+}
+
+// Add todo
+addTodo = (title) => {
+  const newTodo ={
+    id: uuidv4(),
+    title,
+    completed: false
+  }
+   this.setState({todos: [...this.state.todos, newTodo]});
+}
+
+
 render(){
   return(
+    <Router>
     <div className="App">
-      <Todos todos={this.state.todos} markComplete={this.markComplete}/>
+      <div className="container">
+      <Header />
+      <Route exact path="/" render={props => (
+        <React.Fragment>
+                <AddTodo addTodo={this.addTodo}/>
+                <Todos todos={this.state.todos} markComplete={this.markComplete} delTodo={this.delTodo}/> 
+        </React.Fragment>
+      )} />
+      <Route path="/about" component={About} />
+    </div>  
     </div>
+    </Router>
   );
 }
 }
